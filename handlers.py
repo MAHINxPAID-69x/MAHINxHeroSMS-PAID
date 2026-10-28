@@ -201,22 +201,23 @@ async def forward_to_log_group(bot, user_id: int, phone: str, aid: str, code: st
     now_utc_str = datetime.now(timezone.utc).strftime("%I:%M:%S %p UTC")
     
     daily_count = await db.record_user_daily_otp(user_id)
-    
-    # User-er username ebong name identify kora
     user = await get_cached_user(user_id)
+    
     if user:
         name_str = html.escape(str(user.get("full_name") or "User"))
-        user_info = f"<b>{name_str}</b>"
-        if user.get("username"):
-            user_info += f" (@{user['username']})"
+        user_mention = f"@{user['username']}" if user.get("username") else "No Username"
+        user_label = f"<b>{name_str}</b> ({user_mention})"
     else:
-        user_info = "User"
+        user_label = "<b>User</b>"
     
+    # Shundor line-spaced layout monitoring group-er jonno
     group_msg = (
-        f"{EMOJI_USER} <b>User:</b> {user_info} | <code>{user_id}</code>\n"
-        f"{EMOJI_ID} <b>Activation ID:</b> <code>{aid}</code>\n"
-        f"{EMOJI_FLAG} <b>Number:</b> <code>{clean_p}</code>\n"
-        f"{EMOJI_CLOCK} <b>Time:</b> {now_utc_str} | {EMOJI_CHART} <b>Today OTP:</b> <b>{daily_count}</b>"
+        f"{EMOJI_USER} <b>User:</b> {user_label}\n"
+        f"{EMOJI_ID} <b>User ID:</b> <code>{user_id}</code>\n\n"
+        f"{EMOJI_FLAG} <b>Number:</b> <code>+{clean_p}</code>\n"
+        f"{EMOJI_CARD} <b>Activation ID:</b> <code>{aid}</code>\n\n"
+        f"{EMOJI_CLOCK} <b>Time:</b> {now_utc_str}\n"
+        f"{EMOJI_CHART} <b>Today OTPs:</b> <b>{daily_count}</b>"
     )
     try:
         await bot.send_message(
@@ -279,7 +280,7 @@ async def is_allowed(user_id: int) -> bool:
         return False
     return True
 
-# --- Async Background Status Checker (Ultra Fast Non-Blocking) ---
+# --- Async Background Status Checker ---
 async def background_check_and_update(bot, chat_id: int, message_id: int, aid: str, phone: str, cost_str: str, client: HeroSMSClient, user_id: int):
     try:
         check_res = await asyncio.wait_for(check_telegram_numbers([phone]), timeout=5.0)
@@ -301,9 +302,9 @@ async def background_check_and_update(bot, chat_id: int, message_id: int, aid: s
                 status_emoji = EMOJI_WARN
 
         card_text = (
-            f"{EMOJI_FLAG} Number: <code>+{phone}</code> {status_emoji}\n"
-            f"{EMOJI_CARD} Rate: <code>{cost_str}</code>\n"
-            f"{EMOJI_CARD} OTP: Waiting for SMS..."
+            f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code> {status_emoji}\n"
+            f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n"
+            f"{EMOJI_CARD} <b>OTP:</b> <b>Waiting for SMS...</b>"
         )
         try:
             await bot.edit_message_text(
@@ -352,9 +353,14 @@ async def handle_herosms_webhook(request):
             phone = row["phone"]
             msg_id = row["message_id"]
             cost_str = row.get("cost") or ""
-            price_tag = f" | {EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>" if cost_str else ""
             
-            text = f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>{price_tag}\n{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+            # Rate nicher line-e neat structure
+            rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n" if cost_str else ""
+            text = (
+                f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
+                f"{rate_line}"
+                f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+            )
             bot = get_bot_instance()
             if bot:
                 try:
@@ -386,7 +392,7 @@ async def handle_herosms_webhook(request):
 
 # --- Polling Handler (20 Minutes Auto-Poll) ---
 async def poll_sms(bot, chat_id: int, activation_id: str, phone: str, client: HeroSMSClient):
-    for _ in range(400):  # 400 * 3s = 1200 seconds = 20 Minutes
+    for _ in range(400):  # 400 * 3s = 1200s (20 Minutes)
         await asyncio.sleep(3)
         row = await db.get_activation(activation_id)
         if not row:
@@ -398,9 +404,13 @@ async def poll_sms(bot, chat_id: int, activation_id: str, phone: str, client: He
                 if res.startswith("STATUS_OK:"):
                     code = res.split(":", 1)[1]
                     cost_str = row.get("cost") or ""
-                    price_tag = f" | {EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>" if cost_str else ""
-
-                    text = f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>{price_tag}\n{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+                    
+                    rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n" if cost_str else ""
+                    text = (
+                        f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
+                        f"{rate_line}"
+                        f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+                    )
                     msg_id = row["message_id"]
                     if msg_id:
                         await bot.edit_message_text(
@@ -655,13 +665,15 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
 
     await db.increment_user_stats(user_id, purchased=1)
 
-    # HeroSMS Exact Rate
     cost_val = res.get("cost")
     cost_str = f"${float(cost_val):.3f}" if cost_val is not None else f"${active_price:.3f}"
 
+    # Shuru-tei clean line-by-line card layout
     msg = await bot.send_message(
         chat_id,
-        f'{EMOJI_FLAG} Number: <code>+{phone}</code>\n{EMOJI_CARD} Rate: <code>{cost_str}</code>\n{EMOJI_CARD} OTP: Waiting for SMS...',
+        f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
+        f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n"
+        f"{EMOJI_CARD} <b>OTP:</b> <b>Waiting for SMS...</b>",
         reply_markup=kb.number_action_menu(aid),
         parse_mode="HTML"
     )
@@ -691,10 +703,12 @@ async def cb_refresh_sms(callback: CallbackQuery):
                 row = await db.get_activation(aid)
                 phone = row["phone"] if row else "Unknown"
                 cost_str = row.get("cost") or ""
-                price_tag = f" | {EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>" if cost_str else ""
+                rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n" if cost_str else ""
                 
                 await callback.message.edit_text(
-                    f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>{price_tag}\n{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>",
+                    f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
+                    f"{rate_line}"
+                    f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>",
                     reply_markup=kb.otp_copy_menu(code),
                     parse_mode="HTML"
                 )
@@ -775,7 +789,6 @@ async def process_bulk_amount(message: Message, state: FSMContext):
             break
         await asyncio.sleep(0.08)
 
-    # Finishing Notification Alert
     if delivered_count == amount:
         await message.answer(f"{EMOJI_TICK} <b>Order Completed:</b> Successfully purchased all <b>{delivered_count}/{amount}</b> numbers!", parse_mode="HTML")
     else:
