@@ -12,7 +12,8 @@ try:
 except ImportError:
     HAS_REQUESTS = False
 
-BASE_URL = "https://hero-sms.com/stubs/handler_api.php"
+# Temporary working domain updated
+BASE_URL = "https://hero-sms.io/stubs/handler_api.php"
 
 CHECKER_URL = "http://api.agbots.site:8080/check/"
 CHECKER_AUTH = "user8354"
