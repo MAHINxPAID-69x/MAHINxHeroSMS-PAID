@@ -6,33 +6,34 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
-# --- Verified Premium Emoji IDs (from gemini.py) ---
-PEM_OK      = "6111726981760423576"  # ✅
-PEM_NO      = "6311965254817423602"  # ❌
-PEM_WARN    = "6314510813214284503"  # ⚠️
-PEM_ADMIN   = "5353032893096567467"  # 📊
-PEM_USER    = "5352861489541714456"  # 👤
-PEM_MONEY   = "6111799373434197692"  # 💸
-PEM_GIFT    = "6109561463544747928"  # 🎁
-PEM_MSG     = "5337302974806922068"  # 💬
-PEM_ROCKET  = "5352597830089347330"  # 🚀 / ➡️
-PEM_PIN     = "6111410240807245099"  # 📌
-PEM_ADD     = "6188038822509418008"  # ➕
-PEM_REM     = "6188343249791358585"  # ➖
-PEM_VIEW    = "6188447235244562676"  # 👀
-PEM_KEY     = "6233302765582424442"  # 🔑
-PEM_WAIT    = "6233136657722251031"  # ⏳
-PEM_BELL    = "6260082445018731350"  # 🔔
-PEM_GEAR    = "6260111633616475361"  # ⚙️
-PEM_GROUP   = "6233527959307688784"  # 👥
-PEM_BOX     = "5298809897352193254"  # 📦
-PEM_BAN     = "5280803324273115630"  # 🚫
+# --- Pure Telegram Premium Emoji IDs (No standard unicode fallback text) ---
+PEM_ROCKET  = "5352597830089347330"  # 🚀 (Bulk Buy / High Speed Turbo)
+PEM_OK      = "6111726981760423576"  # ✅ (Success / Done / Active)
+PEM_NO      = "6311965254817423602"  # ❌ (Danger / Cancel / Reject)
+PEM_WARN    = "6314510813214284503"  # ⚠️ (Alert)
+PEM_ADMIN   = "5353032893096567467"  # 📊 (Analytics / Stats)
+PEM_USER    = "5352861489541714456"  # 👤 (Profile / Account)
+PEM_MONEY   = "6111799373434197692"  # 💸 (Balance / Money / USD)
+PEM_GIFT    = "6109561463544747928"  # 🎁 (Bonus)
+PEM_MSG     = "5337302974806922068"  # 💬 (Broadcast)
+PEM_PIN     = "6111410240807245099"  # 📌 (Pinned Task)
+PEM_ADD     = "6188038822509418008"  # ➕ (Add / Insert)
+PEM_REM     = "6188343249791358585"  # ➖ (Remove / Sub)
+PEM_VIEW    = "6188447235244562676"  # 👀 (View / Eye)
+PEM_KEY     = "6233302765582424442"  # 🔑 (API Key / Auth)
+PEM_WAIT    = "6233136657722251031"  # ⏳ (Clock / Duration)
+PEM_EARN    = "6186175669991379791"  # 🤑 (Profit / Rates)
+PEM_BELL    = "6260082445018731350"  # 🔔 (Alert Bell)
+PEM_CROWN   = "6183661284467152997"  # 👑 (Owner / VIP)
+PEM_GEAR    = "6260111633616475361"  # ⚙️ (Settings / Config)
+PEM_GROUP   = "6233527959307688784"  # 👥 (Users / Community)
+PEM_TARGET  = "6109432142079466939"  # 🎯 (Target Operator / Direct)
 
 
 def main_reply_menu() -> ReplyKeyboardMarkup:
     b = ReplyKeyboardBuilder()
-    b.button(text="Bulk Buy Numbers", icon_custom_emoji_id=PEM_BOX, style="success")
-    b.button(text="Active Numbers", icon_custom_emoji_id=PEM_ROCKET, style="primary")
+    b.button(text="Bulk Buy Numbers", icon_custom_emoji_id=PEM_ROCKET, style="success")
+    b.button(text="Active Numbers", icon_custom_emoji_id=PEM_VIEW, style="primary")
     b.button(text="Balance", icon_custom_emoji_id=PEM_MONEY, style="success")
     b.button(text="Profile", icon_custom_emoji_id=PEM_USER, style="primary")
     b.adjust(2, 2)
@@ -40,28 +41,28 @@ def main_reply_menu() -> ReplyKeyboardMarkup:
 
 
 def admin_reply_menu(restock_on: bool = True) -> ReplyKeyboardMarkup:
-    restock_label = "🔔 Restock Alert: ON" if restock_on else "🔕 Restock Alert: OFF"
+    restock_label = "Restock Alert: ON" if restock_on else "Restock Alert: OFF"
     b = ReplyKeyboardBuilder()
-    b.button(text="📊 Users & OTP Monitor", icon_custom_emoji_id=PEM_ADMIN, style="primary")
-    b.button(text="📈 Daily & Lifetime Stats", icon_custom_emoji_id=PEM_ADMIN, style="primary")
-    b.button(text="👥 Live Active Users", icon_custom_emoji_id=PEM_GROUP, style="success")
-    b.button(text="⚙️ Buy Config (Operator/Price)", icon_custom_emoji_id=PEM_GEAR, style="primary")
-    b.button(text="🚫 Manage Excluded Prefixes", icon_custom_emoji_id=PEM_BAN, style="primary")
-    b.button(text="📢 Broadcast Message", icon_custom_emoji_id=PEM_MSG, style="primary")
-    b.button(text="🚫 Ban / Unban User", icon_custom_emoji_id=PEM_BAN, style="danger")
-    b.button(text="❌ Unapprove / Revoke Access", icon_custom_emoji_id=PEM_NO, style="danger")
-    b.button(text="⏳ Extend User Subscription", icon_custom_emoji_id=PEM_WAIT, style="success")
+    b.button(text="Users & OTP Monitor", icon_custom_emoji_id=PEM_ADMIN, style="primary")
+    b.button(text="Daily & Lifetime Stats", icon_custom_emoji_id=PEM_EARN, style="primary")
+    b.button(text="Live Active Users", icon_custom_emoji_id=PEM_GROUP, style="success")
+    b.button(text="Buy Config (Operator/Price)", icon_custom_emoji_id=PEM_GEAR, style="primary")
+    b.button(text="Manage Excluded Prefixes", icon_custom_emoji_id=PEM_REM, style="primary")
+    b.button(text="Broadcast Message", icon_custom_emoji_id=PEM_MSG, style="primary")
+    b.button(text="Ban / Unban User", icon_custom_emoji_id=PEM_NO, style="danger")
+    b.button(text="Unapprove / Revoke Access", icon_custom_emoji_id=PEM_NO, style="danger")
+    b.button(text="Extend User Subscription", icon_custom_emoji_id=PEM_WAIT, style="success")
     b.button(text=restock_label, icon_custom_emoji_id=PEM_BELL, style="success" if restock_on else "danger")
-    b.button(text="⚙️ Toggle Maintenance", icon_custom_emoji_id=PEM_GEAR, style="danger")
-    b.button(text="⬅️ Back to User Menu", icon_custom_emoji_id=PEM_ROCKET, style="primary")
+    b.button(text="Toggle Maintenance", icon_custom_emoji_id=PEM_WARN, style="danger")
+    b.button(text="Back to User Menu", icon_custom_emoji_id=PEM_ROCKET, style="primary")
     b.adjust(2, 2, 2, 2, 2, 1, 1)
     return b.as_markup(resize_keyboard=True)
 
 
 def admin_config_menu(current_op: str, current_price: float) -> InlineKeyboardMarkup:
     b = InlineKeyboardBuilder()
-    b.button(text=f"🏢 Operator: {current_op.upper()}", callback_data="cfg_set_operator", icon_custom_emoji_id=PEM_GEAR, style="primary")
-    b.button(text=f"💲 Max Price: ${current_price:.3f}", callback_data="cfg_set_price", icon_custom_emoji_id=PEM_MONEY, style="primary")
+    b.button(text=f"Operator: {current_op.upper()}", callback_data="cfg_set_operator", icon_custom_emoji_id=PEM_TARGET, style="primary")
+    b.button(text=f"Max Price: ${current_price:.3f}", callback_data="cfg_set_price", icon_custom_emoji_id=PEM_MONEY, style="primary")
     b.button(text="Set Any Operator", callback_data="cfg_op_any", icon_custom_emoji_id=PEM_OK, style="success")
     b.button(text="Set Claro Only", callback_data="cfg_op_claro", icon_custom_emoji_id=PEM_OK, style="success")
     b.button(text="Set Movistar Only", callback_data="cfg_op_movistar", icon_custom_emoji_id=PEM_OK, style="success")
@@ -73,10 +74,10 @@ def admin_config_menu(current_op: str, current_price: float) -> InlineKeyboardMa
 
 def prefix_manage_menu() -> InlineKeyboardMarkup:
     b = InlineKeyboardBuilder()
-    b.button(text="➕ Add Prefix", callback_data="pfx_add", icon_custom_emoji_id=PEM_ADD, style="success")
-    b.button(text="➖ Remove Prefix", callback_data="pfx_remove", icon_custom_emoji_id=PEM_REM, style="primary")
-    b.button(text="🗑️ Clear All", callback_data="pfx_clear_all", icon_custom_emoji_id=PEM_NO, style="danger")
-    b.button(text="📋 View All", callback_data="pfx_view", icon_custom_emoji_id=PEM_VIEW, style="primary")
+    b.button(text="Add Prefix", callback_data="pfx_add", icon_custom_emoji_id=PEM_ADD, style="success")
+    b.button(text="Remove Prefix", callback_data="pfx_remove", icon_custom_emoji_id=PEM_REM, style="primary")
+    b.button(text="Clear All", callback_data="pfx_clear_all", icon_custom_emoji_id=PEM_NO, style="danger")
+    b.button(text="View All", callback_data="pfx_view", icon_custom_emoji_id=PEM_VIEW, style="primary")
     b.button(text="Back", callback_data="menu_admin_close", icon_custom_emoji_id=PEM_ROCKET, style="primary")
     b.adjust(2, 2, 1)
     return b.as_markup()
@@ -98,7 +99,7 @@ def back_button(callback_data: str = "menu_main") -> InlineKeyboardMarkup:
 
 def number_action_menu(activation_id: str) -> InlineKeyboardMarkup:
     b = InlineKeyboardBuilder()
-    b.button(text="Refresh OTP", callback_data=f"refresh_{activation_id}", icon_custom_emoji_id=PEM_OK, style="success")
+    b.button(text="Refresh OTP", callback_data=f"refresh_{activation_id}", icon_custom_emoji_id=PEM_WAIT, style="success")
     b.button(text="Cancel Number", callback_data=f"single_cancel_{activation_id}", icon_custom_emoji_id=PEM_NO, style="danger")
     b.adjust(2)
     return b.as_markup()
@@ -151,7 +152,7 @@ def approval_duration_menu(user_id: int) -> InlineKeyboardMarkup:
     b.button(text="3 Days", callback_data=f"appr_{user_id}_3", icon_custom_emoji_id=PEM_WAIT, style="primary")
     b.button(text="7 Days", callback_data=f"appr_{user_id}_7", icon_custom_emoji_id=PEM_WAIT, style="primary")
     b.button(text="30 Days", callback_data=f"appr_{user_id}_30", icon_custom_emoji_id=PEM_WAIT, style="primary")
-    b.button(text="Lifetime", callback_data=f"appr_{user_id}_life", icon_custom_emoji_id=PEM_OK, style="success")
-    b.button(text="❌ Reject", callback_data=f"appr_{user_id}_reject", icon_custom_emoji_id=PEM_NO, style="danger")
+    b.button(text="Lifetime", callback_data=f"appr_{user_id}_life", icon_custom_emoji_id=PEM_CROWN, style="success")
+    b.button(text="Reject", callback_data=f"appr_{user_id}_reject", icon_custom_emoji_id=PEM_NO, style="danger")
     b.adjust(2, 3, 1)
     return b.as_markup()
