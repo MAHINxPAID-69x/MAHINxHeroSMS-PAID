@@ -38,11 +38,25 @@ DEFAULT_MAX_PRICE = 0.145
 DEFAULT_OPERATOR = "any"
 DEFAULT_PREFIXES = ["57319"]
 
+# Menu Button match strings (Text-based reply keyboard sync)
 MENU_BUTTONS = [
     "Bulk Buy Numbers",
     "Active Numbers",
     "Balance",
     "Profile",
+    "Users & OTP Monitor",
+    "Daily & Lifetime Stats",
+    "Live Active Users",
+    "Buy Config (Operator/Price)",
+    "Manage Excluded Prefixes",
+    "Broadcast Message",
+    "Ban / Unban User",
+    "Unapprove / Revoke Access",
+    "Extend User Subscription",
+    "Restock Alert: ON",
+    "Restock Alert: OFF",
+    "Toggle Maintenance",
+    "Back to User Menu",
     "📊 Users & OTP Monitor",
     "📈 Daily & Lifetime Stats",
     "👥 Live Active Users",
@@ -59,22 +73,45 @@ MENU_BUTTONS = [
     "⬅️ Back to User Menu"
 ]
 
-# --- Verified Custom Premium Emojis ---
-EMOJI_USER    = '<tg-emoji emoji-id="5397693616602755866">👤</tg-emoji>'
-EMOJI_ID      = '<tg-emoji emoji-id="5289967908309442996">🆔</tg-emoji>'
+# --- 100% Pure Custom Premium Emojis (gemini.py verified pool) ---
+EMOJI_OK      = '<tg-emoji emoji-id="6111726981760423576">✅</tg-emoji>'
+EMOJI_NO      = '<tg-emoji emoji-id="6311965254817423602">❌</tg-emoji>'
+EMOJI_WARN    = '<tg-emoji emoji-id="6314510813214284503">⚠️</tg-emoji>'
+EMOJI_ADMIN   = '<tg-emoji emoji-id="5353032893096567467">📊</tg-emoji>'
+EMOJI_USER    = '<tg-emoji emoji-id="5352861489541714456">👤</tg-emoji>'
+EMOJI_MONEY   = '<tg-emoji emoji-id="6111799373434197692">💸</tg-emoji>'
+EMOJI_GIFT    = '<tg-emoji emoji-id="6109561463544747928">🎁</tg-emoji>'
+EMOJI_MSG     = '<tg-emoji emoji-id="5337302974806922068">💬</tg-emoji>'
+EMOJI_ROCKET  = '<tg-emoji emoji-id="5352597830089347330">🚀</tg-emoji>'
+EMOJI_PIN     = '<tg-emoji emoji-id="6111410240807245099">📌</tg-emoji>'
+EMOJI_HI      = '<tg-emoji emoji-id="5353027129250453493">👋</tg-emoji>'
+EMOJI_ADD     = '<tg-emoji emoji-id="6188038822509418008">➕</tg-emoji>'
+EMOJI_REM     = '<tg-emoji emoji-id="6188343249791358585">➖</tg-emoji>'
+EMOJI_VIEW    = '<tg-emoji emoji-id="6188447235244562676">👀</tg-emoji>'
+EMOJI_KEY     = '<tg-emoji emoji-id="6233302765582424442">🔑</tg-emoji>'
+EMOJI_WAIT    = '<tg-emoji emoji-id="6233136657722251031">⏳</tg-emoji>'
+EMOJI_EARN    = '<tg-emoji emoji-id="6186175669991379791">🤑</tg-emoji>'
+EMOJI_BELL    = '<tg-emoji emoji-id="6260082445018731350">🔔</tg-emoji>'
+EMOJI_CROWN   = '<tg-emoji emoji-id="6183661284467152997">👑</tg-emoji>'
+EMOJI_GEAR    = '<tg-emoji emoji-id="6260111633616475361">⚙️</tg-emoji>'
+EMOJI_GROUP   = '<tg-emoji emoji-id="6233527959307688784">👥</tg-emoji>'
+EMOJI_TARGET  = '<tg-emoji emoji-id="6109432142079466939">🎯</tg-emoji>'
+
+# System Security & Telephony Emojis
 EMOJI_FLAG    = '<tg-emoji emoji-id="5294010206974397371">🇨🇴</tg-emoji>'
-EMOJI_CLOCK   = '<tg-emoji emoji-id="5215394081911351762">⏰</tg-emoji>'
-EMOJI_CHART   = '<tg-emoji emoji-id="5231200819986047254">📊</tg-emoji>'
-EMOJI_TICK    = '<tg-emoji emoji-id="6087154735125630953">✅</tg-emoji>'
-EMOJI_CROSS   = '<tg-emoji emoji-id="5321012601939838274">❌</tg-emoji>'
-EMOJI_WARN    = '<tg-emoji emoji-id="5420323339723881652">⚠️</tg-emoji>'
-EMOJI_CARD    = '<tg-emoji emoji-id="5206330150433595241">💳</tg-emoji>'
-EMOJI_BOX     = '<tg-emoji emoji-id="5298809897352193254">📦</tg-emoji>'
-EMOJI_KEY     = '<tg-emoji emoji-id="5193070340850327783">🔑</tg-emoji>'
+EMOJI_ID      = '<tg-emoji emoji-id="5289967908309442996">🆔</tg-emoji>'
 EMOJI_LOCK    = '<tg-emoji emoji-id="6334379984760604198">🔒</tg-emoji>'
 EMOJI_BAN     = '<tg-emoji emoji-id="5280803324273115630">🚫</tg-emoji>'
-EMOJI_PLANE   = '<tg-emoji emoji-id="5411563083908797492">🛫</tg-emoji>'
 EMOJI_SIREN   = '<tg-emoji emoji-id="5395695537687123235">🚨</tg-emoji>'
+EMOJI_BOX     = '<tg-emoji emoji-id="5298809897352193254">📦</tg-emoji>'
+
+# Complete unified backwards aliases
+EMOJI_TICK    = EMOJI_OK
+EMOJI_CROSS   = EMOJI_NO
+EMOJI_CARD    = EMOJI_MONEY
+EMOJI_PLANE   = EMOJI_ROCKET
+EMOJI_CHART   = EMOJI_ADMIN
+EMOJI_CLOCK   = EMOJI_WAIT
 
 # --- In-Memory Speed Cache ---
 USER_CACHE = {}
@@ -178,11 +215,11 @@ async def start_restock_monitor():
                                         bot = get_bot_instance()
                                         if bot:
                                             msg_text = (
-                                                f'{EMOJI_SIREN} <b>RESTOCK ALERT!</b>\n\n'
-                                                f'{EMOJI_FLAG} Operator: <b>{op.upper()}</b>\n'
-                                                f'{EMOJI_CARD} Price: <b>${prc:.3f}</b>\n'
-                                                f'{EMOJI_BOX} Available Stock: <b>{cnt} numbers</b>\n\n'
-                                                f'{EMOJI_TICK} Grab now from <b>Bulk Buy Numbers</b>!'
+                                                f'{EMOJI_BELL} {EMOJI_SIREN} <b>RESTOCK ALERT!</b>\n\n'
+                                                f'{EMOJI_FLAG} <b>Operator:</b> <code>{op.upper()}</code>\n'
+                                                f'{EMOJI_MONEY} <b>Price:</b> <code>${prc:.3f}</code>\n'
+                                                f'{EMOJI_BOX} <b>Available Stock:</b> <b>{cnt} numbers</b>\n\n'
+                                                f'{EMOJI_ROCKET} Grab now instantly from <b>Bulk Buy Numbers</b>!'
                                             )
                                             for u in approved:
                                                 try:
@@ -214,9 +251,9 @@ async def forward_to_log_group(bot, user_id: int, phone: str, aid: str, code: st
         f"{EMOJI_USER} <b>User:</b> {user_label}\n"
         f"{EMOJI_ID} <b>User ID:</b> <code>{user_id}</code>\n\n"
         f"{EMOJI_FLAG} <b>Number:</b> <code>+{clean_p}</code>\n"
-        f"{EMOJI_CARD} <b>Activation ID:</b> <code>{aid}</code>\n\n"
-        f"{EMOJI_CLOCK} <b>Time:</b> {now_utc_str}\n"
-        f"{EMOJI_CHART} <b>Today OTPs:</b> <b>{daily_count}</b>"
+        f"{EMOJI_KEY} <b>Activation ID:</b> <code>{aid}</code>\n\n"
+        f"{EMOJI_WAIT} <b>Time:</b> <code>{now_utc_str}</code>\n"
+        f"{EMOJI_ADMIN} <b>Today OTPs:</b> <b>{daily_count}</b>"
     )
     try:
         await bot.send_message(
@@ -236,12 +273,12 @@ def format_tg_status(raw_status: any) -> tuple:
     if any(w in st for w in ["unoccupied", "unregistered", "not_registered", "free", "fresh", "available", "false", "0"]):
         if "banned" in st and not any(neg in st for neg in ["not", "un", "no", "non", "false"]):
             return f'{EMOJI_BAN} Banned', False
-        return f'{EMOJI_TICK} Fresh', True
+        return f'{EMOJI_OK} Fresh', True
 
     if any(w in st for w in ["flood", "locked", "lock", "wait", "restricted", "2fa"]):
         return f'{EMOJI_LOCK} Locked', False
     if any(w in st for w in ["occupied", "registered", "taken", "used", "true", "1"]):
-        return f'{EMOJI_CROSS} Registered', False
+        return f'{EMOJI_NO} Registered', False
     if "banned" in st or "ban" in st:
         return f'{EMOJI_BAN} Banned', False
 
@@ -285,16 +322,16 @@ async def background_check_and_update(bot, chat_id: int, message_id: int, aid: s
         check_res = await asyncio.wait_for(check_telegram_numbers([phone]), timeout=5.0)
         badge = "Fresh"
         is_fresh = True
-        status_emoji = EMOJI_TICK
+        status_emoji = EMOJI_OK
 
         if isinstance(check_res, dict):
             badge, is_fresh = format_tg_status(check_res.get(f"+{phone}") or check_res.get(phone))
             if is_fresh:
-                status_emoji = EMOJI_TICK
+                status_emoji = EMOJI_OK
             elif any(x in badge for x in ["Banned", "Ban"]):
                 status_emoji = EMOJI_BAN
             elif any(x in badge for x in ["Registered", "Occupied"]):
-                status_emoji = EMOJI_CROSS
+                status_emoji = EMOJI_NO
             elif any(x in badge for x in ["Locked", "Flood"]):
                 status_emoji = EMOJI_LOCK
             else:
@@ -302,8 +339,8 @@ async def background_check_and_update(bot, chat_id: int, message_id: int, aid: s
 
         card_text = (
             f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code> {status_emoji}\n"
-            f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n\n"
-            f"{EMOJI_CARD} <b>OTP:</b> <b>Waiting for SMS...</b>"
+            f"{EMOJI_MONEY} <b>Rate:</b> <code>{cost_str}</code>\n\n"
+            f"{EMOJI_WAIT} <b>OTP:</b> <b>Waiting for SMS...</b>"
         )
         try:
             await bot.edit_message_text(
@@ -353,11 +390,11 @@ async def handle_herosms_webhook(request):
             msg_id = row["message_id"]
             cost_str = row.get("cost") or ""
             
-            rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
+            rate_line = f"{EMOJI_MONEY} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
             text = (
                 f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
                 f"{rate_line}"
-                f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+                f"{EMOJI_OK} <b>OTP:</b> <b>{code}</b>"
             )
             bot = get_bot_instance()
             if bot:
@@ -403,11 +440,11 @@ async def poll_sms(bot, chat_id: int, activation_id: str, phone: str, client: He
                     code = res.split(":", 1)[1]
                     cost_str = row.get("cost") or ""
                     
-                    rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
+                    rate_line = f"{EMOJI_MONEY} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
                     text = (
                         f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
                         f"{rate_line}"
-                        f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>"
+                        f"{EMOJI_OK} <b>OTP:</b> <b>{code}</b>"
                     )
                     msg_id = row["message_id"]
                     if msg_id:
@@ -452,13 +489,13 @@ async def cmd_start(message: Message, state: FSMContext):
 
         user = await get_cached_user(uid)
         if user and user.get("is_banned"):
-            await message.answer(f'{EMOJI_BAN} You are banned from using this bot.')
+            await message.answer(f'{EMOJI_BAN} <b>You are banned from using this bot.</b>', parse_mode="HTML")
             return
 
         if not user or not user.get("is_approved"):
             await message.answer(
                 f'{EMOJI_LOCK} <b>Access Restricted!</b>\n\n'
-                'This is a private paid bot. Your approval request has been forwarded to the Admin.',
+                f'{EMOJI_WARN} This is a private paid bot. Your approval request has been forwarded to the Admin.',
                 parse_mode="HTML",
                 reply_markup=ReplyKeyboardRemove()
             )
@@ -468,8 +505,8 @@ async def cmd_start(message: Message, state: FSMContext):
                 alert_text = (
                     f'{EMOJI_SIREN} <b>New Approval Request!</b>\n\n'
                     f'{EMOJI_USER} <b>Name:</b> {html.escape(fname or "User")}\n'
-                    f'{EMOJI_PLANE} <b>Username:</b> {username_str}\n'
-                    f'{EMOJI_CARD} <b>User ID:</b> <code>{uid}</code>\n\n'
+                    f'{EMOJI_ROCKET} <b>Username:</b> {username_str}\n'
+                    f'{EMOJI_ID} <b>User ID:</b> <code>{uid}</code>\n\n'
                     'Select duration to approve:'
                 )
                 await bot.send_message(
@@ -482,17 +519,17 @@ async def cmd_start(message: Message, state: FSMContext):
 
         maintenance = await get_cached_setting("maintenance", "0")
         if maintenance == "1" and uid != ADMIN_ID:
-            return await message.answer(f'{EMOJI_WARN} Bot is under maintenance. Contact Admin.')
+            return await message.answer(f'{EMOJI_WARN} <b>Bot is under maintenance. Contact Admin.</b>', parse_mode="HTML")
 
         if not user.get("api_key"):
             await message.answer(
-                f'{EMOJI_TICK} <b>Welcome to HeroSMS Premium Bot!</b>\n\nPlease send your HeroSMS API Key to get started:',
+                f'{EMOJI_HI} <b>Welcome to HeroSMS Premium Bot!</b>\n\n{EMOJI_KEY} Please send your <b>HeroSMS API Key</b> to get started:',
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML"
             )
             await state.set_state(BotStates.waiting_for_api_key)
         else:
-            await message.answer("Welcome back! Select an option:", reply_markup=kb.main_reply_menu())
+            await message.answer(f"{EMOJI_ROCKET} <b>Welcome back!</b> Select an option from below:", reply_markup=kb.main_reply_menu(), parse_mode="HTML")
 
 @router.callback_query(F.data.startswith("appr_"))
 async def cb_approval_action(callback: CallbackQuery):
@@ -506,7 +543,7 @@ async def cb_approval_action(callback: CallbackQuery):
     if action == "reject":
         await db.set_approval_status(target_id, False)
         invalidate_user_cache(target_id)
-        await callback.message.edit_text(callback.message.html_text + f'\n\n<b>STATUS: REJECTED {EMOJI_CROSS}</b>', parse_mode="HTML")
+        await callback.message.edit_text(callback.message.html_text + f'\n\n<b>STATUS: REJECTED {EMOJI_NO}</b>', parse_mode="HTML")
         return await callback.answer("User Rejected")
 
     days_map = {"1": 1, "3": 3, "7": 7, "30": 30, "life": None}
@@ -516,7 +553,7 @@ async def cb_approval_action(callback: CallbackQuery):
 
     exp_label = f"{days} Day{'s' if days > 1 else ''}" if days else "Lifetime"
     await callback.message.edit_text(
-        callback.message.html_text + f'\n\n<b>STATUS: APPROVED ({exp_label}) {EMOJI_TICK}</b>', parse_mode="HTML"
+        callback.message.html_text + f'\n\n<b>STATUS: APPROVED ({exp_label}) {EMOJI_OK}</b>', parse_mode="HTML"
     )
     await callback.answer(f"Approved for {exp_label}!")
 
@@ -525,9 +562,9 @@ async def cb_approval_action(callback: CallbackQuery):
         try:
             await bot.send_message(
                 target_id,
-                f'{EMOJI_TICK} <b>Congratulations!</b>\n\n'
-                f'Your account has been approved by Admin for <b>{exp_label}</b>!\n'
-                f'Please send your HeroSMS API Key to start using the bot:',
+                f'{EMOJI_OK} <b>Congratulations!</b>\n\n'
+                f'Your account has been approved by Admin for <b>{exp_label}</b> {EMOJI_CROWN}!\n'
+                f'{EMOJI_KEY} Please send your <b>HeroSMS API Key</b> to start using the bot:',
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML"
             )
@@ -543,7 +580,7 @@ async def process_api_key(message: Message, state: FSMContext):
     text = message.text.strip()
     if text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Action cancelled.")
 
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         api_key = text.strip("\"'").strip()
@@ -555,12 +592,13 @@ async def process_api_key(message: Message, state: FSMContext):
             invalidate_user_cache(message.from_user.id)
             await state.clear()
             await message.answer(
-                f'{EMOJI_TICK} API Key saved successfully!\nBalance: <code>{balance:.4f} USD</code>',
+                f'{EMOJI_OK} <b>API Key saved successfully!</b>\n'
+                f'{EMOJI_MONEY} Balance: <code>{balance:.4f} USD</code>',
                 reply_markup=kb.main_reply_menu(),
                 parse_mode="HTML"
             )
         else:
-            await message.answer(f'{EMOJI_CROSS} Invalid API Key. Please check and try again.')
+            await message.answer(f'{EMOJI_NO} <b>Invalid API Key.</b> Please check and try again.')
 
 @router.callback_query(F.data == "menu_main")
 async def cb_menu_main(callback: CallbackQuery, state: FSMContext):
@@ -571,16 +609,16 @@ async def cb_menu_main(callback: CallbackQuery, state: FSMContext):
         await callback.message.delete()
     except Exception:
         pass
-    await callback.message.answer("Main Menu:", reply_markup=kb.main_reply_menu())
+    await callback.message.answer(f"{EMOJI_ROCKET} <b>Main Menu:</b>", reply_markup=kb.main_reply_menu(), parse_mode="HTML")
 
-@router.message(F.text == "Profile")
+@router.message(F.text.in_({"Profile", "👤 Profile"}))
 async def text_profile(message: Message):
     if not await is_allowed(message.from_user.id):
         return
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         user = await get_cached_user(message.from_user.id)
         if not user or not user.get("api_key"):
-            return await message.answer("Set your API Key first with /start")
+            return await message.answer(f"{EMOJI_KEY} Set your API Key first with /start")
         client = HeroSMSClient(user["api_key"])
         balance = await client.get_balance()
         bal_str = f"<code>{balance:.4f} USD</code>" if balance is not None else "Error"
@@ -588,11 +626,11 @@ async def text_profile(message: Message):
         daily_otp = await db.get_user_daily_otp(message.from_user.id)
         text = (
             f'{EMOJI_USER} <b>Account Profile</b>\n\n'
-            f'{EMOJI_CARD} <b>HeroSMS Balance:</b> {bal_str}\n'
-            f'{EMOJI_PLANE} <b>Subscription Expiry:</b> <code>{exp_str}</code>\n'
+            f'{EMOJI_MONEY} <b>HeroSMS Balance:</b> {bal_str}\n'
+            f'{EMOJI_WAIT} <b>Subscription Expiry:</b> <code>{exp_str}</code>\n'
             f'{EMOJI_KEY} <b>API Key:</b> <code>{user["api_key"][:12]}...</code>\n'
-            f'{EMOJI_BOX} <b>Total Purchased:</b> {user.get("total_purchased", 0)}\n'
-            f'{EMOJI_CHART} <b>Today OTPs:</b> <b>{daily_otp}</b> | Lifetime: {user.get("total_otps", 0)}'
+            f'{EMOJI_BOX} <b>Total Purchased:</b> <code>{user.get("total_purchased", 0)}</code>\n'
+            f'{EMOJI_ADMIN} <b>Today OTPs:</b> <b>{daily_otp}</b> | Lifetime: <b>{user.get("total_otps", 0)}</b>'
         )
         await message.answer(text, reply_markup=kb.profile_menu(), parse_mode="HTML")
 
@@ -600,24 +638,24 @@ async def text_profile(message: Message):
 async def cb_change_key(callback: CallbackQuery, state: FSMContext):
     if not await is_allowed(callback.from_user.id):
         return
-    await callback.message.edit_text("Please send your new HeroSMS API Key:", reply_markup=kb.back_button())
+    await callback.message.edit_text(f"{EMOJI_KEY} Please send your new <b>HeroSMS API Key</b>:", reply_markup=kb.back_button(), parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_api_key)
 
-@router.message(F.text == "Balance")
+@router.message(F.text.in_({"Balance", "💸 Balance"}))
 async def text_balance(message: Message):
     if not await is_allowed(message.from_user.id):
         return
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         user = await get_cached_user(message.from_user.id)
         if not user or not user.get("api_key"):
-            return await message.answer("Set your API Key first.")
+            return await message.answer(f"{EMOJI_KEY} Set your API Key first.")
         client = HeroSMSClient(user["api_key"])
         balance = await client.get_balance()
         if balance is not None:
             alert = f'\n{EMOJI_WARN} <b>Warning:</b> Balance is below $0.50! Please recharge.' if balance < 0.50 else ""
-            await message.answer(f'{EMOJI_CARD} Balance: <code>{balance:.4f} USD</code>{alert}', parse_mode="HTML")
+            await message.answer(f'{EMOJI_MONEY} <b>Balance:</b> <code>{balance:.4f} USD</code>{alert}', parse_mode="HTML")
         else:
-            await message.answer(f'{EMOJI_CROSS} Error fetching balance.')
+            await message.answer(f'{EMOJI_NO} Error fetching balance.')
 
 # --- Exact Number Purchase Process with Instant Delivery & Real Cost Delta Fallback ---
 async def buy_single_number_process(bot, user_id: int, chat_id: int, service: str, country_id: int, client: HeroSMSClient):
@@ -666,7 +704,7 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
 
     await db.increment_user_stats(user_id, purchased=1)
 
-    # Step 2: 100% Exact Rate Resolution (API cost or Balance Delta fallback)
+    # Step 2: 100% Exact Rate Resolution
     cost_val = res.get("cost")
     if cost_val is not None:
         cost_str = f"${float(cost_val):.3f}"
@@ -677,12 +715,12 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
         else:
             cost_str = f"${active_price:.3f}"
 
-    # Step 3: Clean User Display Card (No '|', separated line)
+    # Step 3: Clean User Display Card
     msg = await bot.send_message(
         chat_id,
         f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
-        f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n\n"
-        f"{EMOJI_CARD} <b>OTP:</b> <b>Waiting for SMS...</b>",
+        f"{EMOJI_MONEY} <b>Rate:</b> <code>{cost_str}</code>\n\n"
+        f"{EMOJI_WAIT} <b>OTP:</b> <b>Waiting for SMS...</b>",
         reply_markup=kb.number_action_menu(aid),
         parse_mode="HTML"
     )
@@ -712,12 +750,12 @@ async def cb_refresh_sms(callback: CallbackQuery):
                 row = await db.get_activation(aid)
                 phone = row["phone"] if row else "Unknown"
                 cost_str = row.get("cost") or ""
-                rate_line = f"{EMOJI_CARD} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
+                rate_line = f"{EMOJI_MONEY} <b>Rate:</b> <code>{cost_str}</code>\n\n" if cost_str else ""
                 
                 await callback.message.edit_text(
                     f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
                     f"{rate_line}"
-                    f"{EMOJI_CARD} <b>OTP:</b> <b>{code}</b>",
+                    f"{EMOJI_OK} <b>OTP:</b> <b>{code}</b>",
                     reply_markup=kb.otp_copy_menu(code),
                     parse_mode="HTML"
                 )
@@ -730,7 +768,7 @@ async def cb_refresh_sms(callback: CallbackQuery):
                 await callback.answer("Still waiting for OTP...", show_alert=True)
             elif res.startswith("STATUS_CANCEL"):
                 await db.delete_activation(aid)
-                await callback.message.edit_text("Activation cancelled.")
+                await callback.message.edit_text(f"{EMOJI_WARN} Activation cancelled.")
             else:
                 await callback.answer(f"Status: {res}", show_alert=True)
         else:
@@ -746,20 +784,20 @@ async def cb_cancel_single(callback: CallbackQuery):
     res = await client.set_status(aid, 8)
     if isinstance(res, str) and (res.startswith("ACCESS_CANCEL") or res.startswith("STATUS_CANCEL")):
         await db.delete_activation(aid)
-        await callback.message.edit_text("Cancelled. Balance refunded.")
+        await callback.message.edit_text(f"{EMOJI_OK} Cancelled. Balance refunded.")
     elif isinstance(res, str) and "EARLY_CANCEL_DENIED" in res:
         await callback.answer("Cannot cancel within first 2 minutes. Auto-refund worker active.", show_alert=True)
     else:
         err = res.get("title", str(res)) if isinstance(res, dict) else str(res)
         await callback.answer(f"Error: {err}", show_alert=True)
 
-@router.message(F.text == "Bulk Buy Numbers")
+@router.message(F.text.in_({"Bulk Buy Numbers", "🚀 Bulk Buy Numbers"}))
 async def text_bulk_buy(message: Message, state: FSMContext):
     if not await is_allowed(message.from_user.id):
         return
     user = await get_cached_user(message.from_user.id)
     if not user or not user.get("api_key"):
-        return await message.answer("Please send your HeroSMS API Key first.")
+        return await message.answer(f"{EMOJI_KEY} Please send your HeroSMS API Key first.")
     await message.answer(f'{EMOJI_BOX} <b>Bulk Purchase</b>\n\nHow many numbers do you want to buy? (1-50):', parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_bulk_amount)
 
@@ -768,23 +806,23 @@ async def process_bulk_amount(message: Message, state: FSMContext):
     text = message.text.strip()
     if text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Bulk buy cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Bulk buy cancelled.")
 
     try:
         amount = int(text)
         if amount < 1 or amount > 50:
             raise ValueError
     except Exception:
-        await message.answer("Enter a valid number between 1 and 50.")
+        await message.answer(f"{EMOJI_WARN} Enter a valid number between 1 and 50.")
         return
 
     await state.clear()
     user = await get_cached_user(message.from_user.id)
     if not user or not user.get("api_key"):
-        return await message.answer("Please set your API key first.")
+        return await message.answer(f"{EMOJI_KEY} Please set your API key first.")
 
     client = HeroSMSClient(user["api_key"])
-    await message.answer(f'{EMOJI_PLANE} Starting bulk purchase of {amount} numbers...', parse_mode="HTML")
+    await message.answer(f'{EMOJI_ROCKET} Starting bulk purchase of <b>{amount}</b> numbers...', parse_mode="HTML")
 
     delivered_count = 0
     for i in range(amount):
@@ -799,31 +837,31 @@ async def process_bulk_amount(message: Message, state: FSMContext):
         await asyncio.sleep(0.08)
 
     if delivered_count == amount:
-        await message.answer(f"{EMOJI_TICK} <b>Order Completed:</b> Successfully purchased all <b>{delivered_count}/{amount}</b> numbers!", parse_mode="HTML")
+        await message.answer(f"{EMOJI_OK} <b>Order Completed:</b> Successfully purchased all <b>{delivered_count}/{amount}</b> numbers!", parse_mode="HTML")
     else:
         failed_count = amount - delivered_count
         await message.answer(f"{EMOJI_WARN} <b>Order Finished:</b> Delivered <b>{delivered_count}/{amount}</b> numbers (Stock unavailable or limit reached: {failed_count} failed).", parse_mode="HTML")
 
-@router.message(F.text == "Active Numbers")
+@router.message(F.text.in_({"Active Numbers", "👀 Active Numbers"}))
 async def text_active_numbers(message: Message):
     if not await is_allowed(message.from_user.id):
         return
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         user = await get_cached_user(message.from_user.id)
         if not user or not user.get("api_key"):
-            return await message.answer("Set your API Key first.")
+            return await message.answer(f"{EMOJI_KEY} Set your API Key first.")
         client = HeroSMSClient(user["api_key"])
         res = await client.get_active_activations()
 
         if not (isinstance(res, dict) and res.get("status") == "success"):
             err = res.get("title", str(res)) if isinstance(res, dict) else str(res)
-            return await message.answer(f"Error: {html.escape(err)}")
+            return await message.answer(f"{EMOJI_NO} Error: {html.escape(err)}")
 
         activations = res.get("data", [])
         if not activations:
-            return await message.answer(f'{EMOJI_WARN} No active numbers.', parse_mode="HTML")
+            return await message.answer(f'{EMOJI_WARN} No active numbers found.', parse_mode="HTML")
 
-        await message.answer(f"Active Numbers ({len(activations)}):", reply_markup=kb.active_numbers_menu(activations))
+        await message.answer(f"{EMOJI_VIEW} <b>Active Numbers ({len(activations)}):</b>", reply_markup=kb.active_numbers_menu(activations), parse_mode="HTML")
 
 @router.callback_query(F.data == "cancel_all_active")
 async def cb_cancel_all_active(callback: CallbackQuery):
@@ -838,7 +876,7 @@ async def cb_cancel_all_active(callback: CallbackQuery):
     if not activations:
         return await callback.answer("No active numbers to cancel.", show_alert=True)
 
-    await callback.message.edit_text(f"Cancelling {len(activations)} numbers... please wait.")
+    await callback.message.edit_text(f"{EMOJI_WAIT} Cancelling {len(activations)} numbers... please wait.")
 
     async def cancel_one(act):
         aid = str(act.get("activationId", ""))
@@ -855,7 +893,7 @@ async def cb_cancel_all_active(callback: CallbackQuery):
 
     results = await asyncio.gather(*[cancel_one(a) for a in activations])
     ok = sum(1 for x in results if x)
-    await callback.message.edit_text(f"Cancelled {ok}/{len(activations)} numbers. Balance refunded.")
+    await callback.message.edit_text(f"{EMOJI_OK} Cancelled {ok}/{len(activations)} numbers. Balance refunded.")
 
 @router.callback_query(F.data.startswith("active_cancel_"))
 async def cb_active_cancel(callback: CallbackQuery):
@@ -870,7 +908,7 @@ async def cb_active_cancel(callback: CallbackQuery):
         if isinstance(res, dict) and res.get("status") == "success":
             acts = res.get("data", [])
             if not acts:
-                await callback.message.edit_text("No active numbers left.")
+                await callback.message.edit_text(f"{EMOJI_WARN} No active numbers left.")
             else:
                 await callback.message.edit_reply_markup(reply_markup=kb.active_numbers_menu(acts))
     elif isinstance(r, str) and "EARLY_CANCEL_DENIED" in r:
@@ -885,28 +923,28 @@ async def cmd_admin(message: Message):
         return
     is_restock = (await get_cached_setting("restock_monitor", "0")) == "1"
     await message.answer(
-        f'{EMOJI_KEY} <b>Admin Control Panel Activated!</b>\n\nKeyboard switched to Admin tools:',
+        f'{EMOJI_KEY} <b>Admin Control Panel Activated!</b>\n\n{EMOJI_GEAR} Keyboard switched to Admin tools:',
         reply_markup=kb.admin_reply_menu(restock_on=is_restock),
         parse_mode="HTML"
     )
 
-@router.message(F.text == "⬅️ Back to User Menu")
+@router.message(F.text.in_({"Back to User Menu", "⬅️ Back to User Menu"}))
 async def back_to_user_menu(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
-    await message.answer(f'{EMOJI_PLANE} Switched back to User Menu:', reply_markup=kb.main_reply_menu(), parse_mode="HTML")
+    await message.answer(f'{EMOJI_ROCKET} <b>Switched back to User Menu:</b>', reply_markup=kb.main_reply_menu(), parse_mode="HTML")
 
 # --- Dynamic Buy Config (Operator / Price) ---
-@router.message(F.text == "⚙️ Buy Config (Operator/Price)")
+@router.message(F.text.in_({"Buy Config (Operator/Price)", "⚙️ Buy Config (Operator/Price)"}))
 async def admin_buy_config(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
     current_op = await get_active_operator()
     current_price = await get_active_max_price()
     text = (
-        f"⚙️ <b>Live Purchase Configuration:</b>\n\n"
-        f"🏢 <b>Target Operator:</b> <code>{current_op.upper()}</code>\n"
-        f"💲 <b>Maximum Price:</b> <code>${current_price:.3f}</code>\n\n"
+        f"{EMOJI_GEAR} <b>Live Purchase Configuration:</b>\n\n"
+        f"{EMOJI_TARGET} <b>Target Operator:</b> <code>{current_op.upper()}</code>\n"
+        f"{EMOJI_MONEY} <b>Maximum Price:</b> <code>${current_price:.3f}</code>\n\n"
         f"Click below to change instantly:"
     )
     await message.answer(text, reply_markup=kb.admin_config_menu(current_op, current_price), parse_mode="HTML")
@@ -920,9 +958,9 @@ async def cb_config_quick_operator(callback: CallbackQuery):
     await callback.answer(f"Operator set to: {op.upper()}", show_alert=True)
     current_price = await get_active_max_price()
     text = (
-        f"⚙️ <b>Live Purchase Configuration:</b>\n\n"
-        f"🏢 <b>Target Operator:</b> <code>{op.upper()}</code>\n"
-        f"💲 <b>Maximum Price:</b> <code>${current_price:.3f}</code>\n\n"
+        f"{EMOJI_GEAR} <b>Live Purchase Configuration:</b>\n\n"
+        f"{EMOJI_TARGET} <b>Target Operator:</b> <code>{op.upper()}</code>\n"
+        f"{EMOJI_MONEY} <b>Maximum Price:</b> <code>${current_price:.3f}</code>\n\n"
         f"Click below to change instantly:"
     )
     await callback.message.edit_text(text, reply_markup=kb.admin_config_menu(op, current_price), parse_mode="HTML")
@@ -931,7 +969,7 @@ async def cb_config_quick_operator(callback: CallbackQuery):
 async def cb_cfg_set_op_manual(callback: CallbackQuery, state: FSMContext):
     if callback.from_user.id != ADMIN_ID:
         return
-    await callback.message.edit_text("Send the operator code (e.g. <code>claro</code>, <code>movistar</code>, <code>tigo</code>, or <code>any</code>):", parse_mode="HTML")
+    await callback.message.edit_text(f"{EMOJI_TARGET} Send operator code (e.g. <code>claro</code>, <code>movistar</code>, <code>tigo</code>, or <code>any</code>):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_operator)
 
 @router.message(BotStates.waiting_for_operator)
@@ -941,17 +979,17 @@ async def process_manual_operator(message: Message, state: FSMContext):
     text = message.text.strip().lower()
     if text in ["cancel", "back"] or message.text.strip() in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Operator setting cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Operator setting cancelled.")
     
     await update_cached_setting("buy_operator", text)
     await state.clear()
-    await message.answer(f"{EMOJI_TICK} Purchase operator updated to: <b>{text.upper()}</b>", parse_mode="HTML")
+    await message.answer(f"{EMOJI_OK} Purchase operator updated to: <b>{text.upper()}</b>", parse_mode="HTML")
 
 @router.callback_query(F.data == "cfg_set_price")
 async def cb_cfg_set_price(callback: CallbackQuery, state: FSMContext):
     if callback.from_user.id != ADMIN_ID:
         return
-    await callback.message.edit_text("Send the new <b>Max Price</b> in USD (e.g. 0.145, 0.20, 0.41):", parse_mode="HTML")
+    await callback.message.edit_text(f"{EMOJI_MONEY} Send new <b>Max Price</b> in USD (e.g. 0.145, 0.20, 0.41):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_max_price)
 
 @router.message(BotStates.waiting_for_max_price)
@@ -961,17 +999,17 @@ async def process_manual_max_price(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Max price update cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Max price update cancelled.")
     try:
         val = float(text)
         if val <= 0:
             raise ValueError
     except:
-        return await message.answer("Please send a valid positive number:")
+        return await message.answer(f"{EMOJI_WARN} Please send a valid positive number:")
 
     await update_cached_setting("buy_max_price", str(val))
     await state.clear()
-    await message.answer(f"{EMOJI_TICK} Max purchase price set to: <b>${val:.3f}</b>", parse_mode="HTML")
+    await message.answer(f"{EMOJI_OK} Max purchase price set to: <b>${val:.3f}</b>", parse_mode="HTML")
 
 @router.callback_query(F.data == "menu_admin_close")
 async def cb_admin_menu_close(callback: CallbackQuery, state: FSMContext):
@@ -982,14 +1020,14 @@ async def cb_admin_menu_close(callback: CallbackQuery, state: FSMContext):
         pass
 
 # --- Dynamic Excluded Prefixes Manager ---
-@router.message(F.text == "🚫 Manage Excluded Prefixes")
+@router.message(F.text.in_({"Manage Excluded Prefixes", "🚫 Manage Excluded Prefixes"}))
 async def admin_manage_prefixes(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
     prefixes = await get_active_prefixes()
     pref_str = ", ".join([f"<code>{p}</code>" for p in prefixes]) if prefixes else "<i>None</i>"
     text = (
-        f"🚫 <b>Excluded Prefixes Manager</b>\n\n"
+        f"{EMOJI_BAN} <b>Excluded Prefixes Manager</b>\n\n"
         f"Currently Excluded ({len(prefixes)}):\n{pref_str}\n\n"
         f"Select an action below:"
     )
@@ -1001,14 +1039,14 @@ async def cb_pfx_view(callback: CallbackQuery):
         return
     prefixes = await get_active_prefixes()
     pref_str = "\n".join([f"• <code>{p}</code>" for p in prefixes]) if prefixes else "<i>No excluded prefixes</i>"
-    await callback.message.answer(f"📋 <b>All Excluded Prefixes:</b>\n\n{pref_str}", parse_mode="HTML")
+    await callback.message.answer(f"{EMOJI_VIEW} <b>All Excluded Prefixes:</b>\n\n{pref_str}", parse_mode="HTML")
     await callback.answer()
 
 @router.callback_query(F.data == "pfx_add")
 async def cb_pfx_add(callback: CallbackQuery, state: FSMContext):
     if callback.from_user.id != ADMIN_ID:
         return
-    await callback.message.edit_text("Send the prefix you want to exclude (e.g. <code>57319</code> or multiple separated by commas):", parse_mode="HTML")
+    await callback.message.edit_text(f"{EMOJI_ADD} Send prefix to exclude (e.g. <code>57319</code> or separated by commas):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_add_prefix)
 
 @router.message(BotStates.waiting_for_add_prefix)
@@ -1018,12 +1056,12 @@ async def process_add_prefix(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Action cancelled.")
 
     current = await get_active_prefixes()
     new_items = [re.sub(r'[^\d]', '', x) for x in text.split(",") if re.sub(r'[^\d]', '', x)]
     if not new_items:
-        return await message.answer("Please send valid numeric prefix(es):")
+        return await message.answer(f"{EMOJI_WARN} Please send valid numeric prefix(es):")
 
     added = []
     for item in new_items:
@@ -1033,14 +1071,14 @@ async def process_add_prefix(message: Message, state: FSMContext):
 
     await update_cached_setting("buy_excluded_prefixes", json.dumps(current))
     await state.clear()
-    await message.answer(f"{EMOJI_TICK} Added prefixes: {', '.join(added)}\nTotal active: {len(current)}", parse_mode="HTML")
+    await message.answer(f"{EMOJI_OK} Added prefixes: {', '.join(added)}\nTotal active: {len(current)}", parse_mode="HTML")
 
 @router.callback_query(F.data == "pfx_clear_all")
 async def cb_pfx_clear_all(callback: CallbackQuery):
     if callback.from_user.id != ADMIN_ID:
         return
     await update_cached_setting("buy_excluded_prefixes", json.dumps([]))
-    await callback.message.edit_text(f"{EMOJI_TICK} Shob excluded prefixes clear kora hoyeche!", parse_mode="HTML")
+    await callback.message.edit_text(f"{EMOJI_OK} Shob excluded prefixes clear kora hoyeche!", parse_mode="HTML")
     await callback.answer("Cleared all prefixes!")
 
 @router.callback_query(F.data == "pfx_remove")
@@ -1050,8 +1088,8 @@ async def cb_pfx_remove(callback: CallbackQuery, state: FSMContext):
     current = await get_active_prefixes()
     pref_str = ", ".join([f"<code>{p}</code>" for p in current]) if current else "None"
     await callback.message.edit_text(
-        f"Currently excluded: {pref_str}\n\n"
-        "Send the prefix(es) you want to remove (e.g. <code>57319, 57350</code>):",
+        f"{EMOJI_REM} <b>Currently excluded:</b> {pref_str}\n\n"
+        "Send prefix(es) to remove (e.g. <code>57319, 57350</code>):",
         parse_mode="HTML"
     )
     await state.set_state(BotStates.waiting_for_remove_prefix)
@@ -1063,12 +1101,12 @@ async def process_remove_prefix(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Action cancelled.")
 
     current = await get_active_prefixes()
     raw_targets = re.findall(r'\d+', text)
     if not raw_targets:
-        return await message.answer("Please send valid numeric prefix(es):")
+        return await message.answer(f"{EMOJI_WARN} Please send valid numeric prefix(es):")
 
     removed = []
     not_found = []
@@ -1084,7 +1122,7 @@ async def process_remove_prefix(message: Message, state: FSMContext):
 
     reply_lines = []
     if removed:
-        reply_lines.append(f"{EMOJI_TICK} <b>Removed ({len(removed)}):</b> {', '.join(removed)}")
+        reply_lines.append(f"{EMOJI_OK} <b>Removed ({len(removed)}):</b> {', '.join(removed)}")
     if not_found:
         reply_lines.append(f"{EMOJI_WARN} <b>Not found:</b> {', '.join(not_found)}")
     reply_lines.append(f"<b>Remaining active:</b> {len(current)}")
@@ -1092,7 +1130,7 @@ async def process_remove_prefix(message: Message, state: FSMContext):
     await message.answer("\n".join(reply_lines), parse_mode="HTML")
 
 # --- Daily & Lifetime Analytics ---
-@router.message(F.text == "📈 Daily & Lifetime Stats")
+@router.message(F.text.in_({"Daily & Lifetime Stats", "📈 Daily & Lifetime Stats"}))
 async def admin_stats_overview(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
@@ -1105,11 +1143,11 @@ async def admin_stats_overview(message: Message):
         total_bot_otps = sum(u.get("total_otps", 0) for u in users)
 
         lines = [
-            f"📈 <b>Bot Usage & Activity Summary</b>\n",
-            f"👥 <b>Total Approved Users:</b> <code>{len(users)}</code>",
-            f"📦 <b>Total Numbers Bought (Lifetime):</b> <code>{total_bot_bought}</code>",
-            f"💳 <b>Total OTPs Received (Lifetime):</b> <code>{total_bot_otps}</code>",
-            f"\n📊 <b>Per-User Breakdown:</b>"
+            f"{EMOJI_ADMIN} <b>Bot Usage & Activity Summary</b>\n",
+            f"{EMOJI_GROUP} <b>Total Approved Users:</b> <code>{len(users)}</code>",
+            f"{EMOJI_BOX} <b>Total Numbers Bought (Lifetime):</b> <code>{total_bot_bought}</code>",
+            f"{EMOJI_MONEY} <b>Total OTPs Received (Lifetime):</b> <code>{total_bot_otps}</code>",
+            f"\n{EMOJI_ADMIN} <b>Per-User Breakdown:</b>"
         ]
 
         for idx, u in enumerate(users, 1):
@@ -1128,32 +1166,31 @@ async def admin_stats_overview(message: Message):
         else:
             await message.answer(text, parse_mode="HTML")
 
-@router.message(F.text.startswith("🔔 Restock Alert") | F.text.startswith("🔕 Restock Alert"))
+@router.message(F.text.startswith("Restock Alert") | F.text.startswith("🔔 Restock Alert") | F.text.startswith("🔕 Restock Alert"))
 async def toggle_restock_alert(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
     current = await get_cached_setting("restock_monitor", "0")
     new_val = "0" if current == "1" else "1"
     await update_cached_setting("restock_monitor", new_val)
-    status_str = "ENABLED (Users will get alerts)" if new_val == "1" else "DISABLED"
+    status_str = f"ENABLED {EMOJI_OK} (Alerts On)" if new_val == "1" else f"DISABLED {EMOJI_NO}"
     await message.answer(
-        f"Restock Monitor is now: <b>{status_str}</b>",
+        f"{EMOJI_BELL} Restock Monitor is now: <b>{status_str}</b>",
         reply_markup=kb.admin_reply_menu(restock_on=(new_val == "1")),
         parse_mode="HTML"
     )
 
-@router.message(F.text == "⚙️ Toggle Maintenance")
-@router.message(F.text == "⚙ Toggle Maintenance")
+@router.message(F.text.in_({"Toggle Maintenance", "⚙️ Toggle Maintenance", "⚙ Toggle Maintenance"}))
 async def admin_toggle_maint(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
     current = await get_cached_setting("maintenance", "0")
     new_val = "0" if current == "1" else "1"
     await update_cached_setting("maintenance", new_val)
-    status_label = f'ENABLED (Users Locked {EMOJI_CROSS})' if new_val == "1" else f'DISABLED (Normal Mode {EMOJI_TICK})'
+    status_label = f'ENABLED (Users Locked {EMOJI_NO})' if new_val == "1" else f'DISABLED (Normal Mode {EMOJI_OK})'
     await message.answer(f'{EMOJI_WARN} Maintenance Mode is now: <b>{status_label}</b>', parse_mode="HTML")
 
-@router.message(F.text == "📊 Users & OTP Monitor")
+@router.message(F.text.in_({"Users & OTP Monitor", "📊 Users & OTP Monitor"}))
 async def admin_monitor_users(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
@@ -1181,7 +1218,7 @@ async def admin_monitor_users(message: Message):
         else:
             await message.answer(text, parse_mode="HTML")
 
-@router.message(F.text == "👥 Live Active Users")
+@router.message(F.text.in_({"Live Active Users", "👥 Live Active Users"}))
 async def admin_live_active_users(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
@@ -1216,16 +1253,16 @@ async def admin_live_active_users(message: Message):
             lines.append(
                 f"<b>{idx}. {html.escape(str(u.get('full_name') or 'User'))}</b> ({uname})\n"
                 f"• ID: <code>{u['user_id']}</code>\n"
-                f'• Status: {EMOJI_TICK} <b>Active</b> ({time_left})\n'
+                f'• Status: {EMOJI_OK} <b>Active</b> ({time_left})\n'
             )
         await message.answer("\n".join(lines), parse_mode="HTML")
 
 # --- Step-by-Step Ban/Unban ---
-@router.message(F.text == "🚫 Ban / Unban User")
+@router.message(F.text.in_({"Ban / Unban User", "🚫 Ban / Unban User"}))
 async def admin_req_ban(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
         return
-    await message.answer("Send the <b>User ID</b> to Ban / Unban (or send cancel):", parse_mode="HTML")
+    await message.answer(f"{EMOJI_BAN} Send the <b>User ID</b> to Ban / Unban (or send cancel):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_ban_id)
 
 @router.message(BotStates.waiting_for_ban_id)
@@ -1235,30 +1272,30 @@ async def process_ban_id(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Ban/Unban action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Ban/Unban action cancelled.")
 
     try:
         target = int(text)
     except Exception:
-        return await message.answer("Invalid ID. Send a numeric User ID:")
+        return await message.answer(f"{EMOJI_WARN} Invalid ID. Send a numeric User ID:")
 
     user = await get_cached_user(target)
     if not user:
-        return await message.answer("User not found in database. Try another ID:")
+        return await message.answer(f"{EMOJI_WARN} User not found in database. Try another ID:")
 
     new_status = not bool(user.get("is_banned"))
     await db.set_ban_status(target, new_status)
     invalidate_user_cache(target)
-    label = f'BANNED {EMOJI_BAN}' if new_status else f'UNBANNED {EMOJI_TICK}'
+    label = f'BANNED {EMOJI_BAN}' if new_status else f'UNBANNED {EMOJI_OK}'
     await message.answer(f"User <code>{target}</code> is now <b>{label}</b>.", parse_mode="HTML")
     await state.clear()
 
 # --- Step-by-Step Unapprove ---
-@router.message(F.text == "❌ Unapprove / Revoke Access")
+@router.message(F.text.in_({"Unapprove / Revoke Access", "❌ Unapprove / Revoke Access"}))
 async def admin_revoke_access_req(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
         return
-    await message.answer("Send the <b>User ID</b> to revoke access (or send cancel):", parse_mode="HTML")
+    await message.answer(f"{EMOJI_LOCK} Send the <b>User ID</b> to revoke access (or send cancel):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_unapprove_id)
 
 @router.message(BotStates.waiting_for_unapprove_id)
@@ -1268,12 +1305,12 @@ async def process_unapprove_id(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Unapprove action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Unapprove action cancelled.")
 
     try:
         target = int(text)
     except Exception:
-        return await message.answer("Invalid ID. Send a numeric User ID:")
+        return await message.answer(f"{EMOJI_WARN} Invalid ID. Send a numeric User ID:")
 
     await db.set_approval_status(target, False)
     invalidate_user_cache(target)
@@ -1281,17 +1318,17 @@ async def process_unapprove_id(message: Message, state: FSMContext):
     bot = get_bot_instance()
     if bot:
         try:
-            await bot.send_message(target, f'{EMOJI_WARN} Your bot access has been revoked by the Admin.', reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            await bot.send_message(target, f'{EMOJI_WARN} <b>Your bot access has been revoked by the Admin.</b>', reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         except Exception:
             pass
     await state.clear()
 
 # --- Step-by-Step Extend Subscription ---
-@router.message(F.text == "⏳ Extend User Subscription")
+@router.message(F.text.in_({"Extend User Subscription", "⏳ Extend User Subscription"}))
 async def admin_extend_user_req(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
         return
-    await message.answer("Send the <b>User ID</b> to extend subscription (or send cancel):", parse_mode="HTML")
+    await message.answer(f"{EMOJI_WAIT} Send the <b>User ID</b> to extend subscription (or send cancel):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_extend_id)
 
 @router.message(BotStates.waiting_for_extend_id)
@@ -1301,19 +1338,19 @@ async def process_extend_user_id(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Extend action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Extend action cancelled.")
 
     try:
         target = int(text)
     except Exception:
-        return await message.answer("Invalid ID. Send a numeric User ID:")
+        return await message.answer(f"{EMOJI_WARN} Invalid ID. Send a numeric User ID:")
 
     user = await get_cached_user(target)
     if not user:
-        return await message.answer("User not found. Try another ID:")
+        return await message.answer(f"{EMOJI_WARN} User not found. Try another ID:")
 
     await state.update_data(extend_target_id=target)
-    await message.answer(f"User <code>{target}</code> selected.\nNow send the number of <b>days</b> to add (e.g. 1, 3, 7, 30):", parse_mode="HTML")
+    await message.answer(f"{EMOJI_USER} User <code>{target}</code> selected.\nNow send the number of <b>days</b> to add (e.g. 1, 3, 7, 30):", parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_extend_days)
 
 @router.message(BotStates.waiting_for_extend_days)
@@ -1323,14 +1360,14 @@ async def process_extend_days(message: Message, state: FSMContext):
     text = message.text.strip()
     if text.lower() in ["cancel", "back"] or text in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Extend action cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Extend action cancelled.")
 
     try:
         days = int(text)
         if days <= 0:
             raise ValueError
     except Exception:
-        return await message.answer("Enter a positive number of days:")
+        return await message.answer(f"{EMOJI_WARN} Enter a positive number of days:")
 
     data = await state.get_data()
     target = data.get("extend_target_id")
@@ -1340,26 +1377,26 @@ async def process_extend_days(message: Message, state: FSMContext):
         new_exp = await db.extend_user_subscription(target, days)
         invalidate_user_cache(target)
         if new_exp:
-            await message.answer(f'{EMOJI_TICK} Subscription extended by {days} days for <code>{target}</code>!\nNew Expiry: <code>{new_exp}</code>', parse_mode="HTML")
+            await message.answer(f'{EMOJI_OK} Subscription extended by {days} days for <code>{target}</code>!\nNew Expiry: <code>{new_exp}</code>', parse_mode="HTML")
             bot = get_bot_instance()
             if bot:
                 try:
                     await bot.send_message(
                         target,
-                        f'{EMOJI_TICK} <b>Subscription Extended!</b>\n\nYour access has been extended by {days} days.\nValid until: <code>{new_exp}</code>',
+                        f'{EMOJI_OK} <b>Subscription Extended!</b>\n\nYour access has been extended by {days} days.\nValid until: <code>{new_exp}</code>',
                         parse_mode="HTML"
                     )
                 except Exception:
                     pass
         else:
-            await message.answer("Failed to extend subscription.")
+            await message.answer(f"{EMOJI_NO} Failed to extend subscription.")
 
 # --- Broadcast ---
-@router.message(F.text == "📢 Broadcast Message")
+@router.message(F.text.in_({"Broadcast Message", "📢 Broadcast Message"}))
 async def admin_req_broadcast(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
         return
-    await message.answer("Send the message to broadcast (or type cancel):")
+    await message.answer(f"{EMOJI_MSG} Send the message to broadcast (or type cancel):")
     await state.set_state(BotStates.waiting_for_broadcast)
 
 @router.message(BotStates.waiting_for_broadcast)
@@ -1368,19 +1405,19 @@ async def process_broadcast(message: Message, state: FSMContext):
         return
     if message.text.strip().lower() in ["cancel", "back"] or message.text.strip() in MENU_BUTTONS:
         await state.clear()
-        return await message.answer("Broadcast cancelled.")
+        return await message.answer(f"{EMOJI_WARN} Broadcast cancelled.")
 
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         users = await db.get_all_users()
         sent = 0
         for uid in users:
             try:
-                await message.bot.send_message(uid, f'{EMOJI_PLANE} <b>Announcement:</b>\n\n{message.text}', parse_mode="HTML")
+                await message.bot.send_message(uid, f'{EMOJI_MSG} <b>Announcement:</b>\n\n{message.text}', parse_mode="HTML")
                 sent += 1
                 await asyncio.sleep(0.05)
             except Exception:
                 pass
-        await message.answer(f'{EMOJI_TICK} Broadcast sent to {sent} users.', parse_mode="HTML")
+        await message.answer(f'{EMOJI_OK} Broadcast sent to {sent} users.', parse_mode="HTML")
         await state.clear()
 
 @router.callback_query(F.data == "noop")
