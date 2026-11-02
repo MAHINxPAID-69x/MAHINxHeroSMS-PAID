@@ -215,7 +215,7 @@ async def forward_to_log_group(bot, user_id: int, phone: str, aid: str, code: st
         f"{EMOJI_ID} <b>User ID:</b> <code>{user_id}</code>\n\n"
         f"{EMOJI_FLAG} <b>Number:</b> <code>+{clean_p}</code>\n"
         f"{EMOJI_CARD} <b>Activation ID:</b> <code>{aid}</code>\n\n"
-        f"{EMOJI_CLOCK} <b>Time:</b> <code>{now_utc_str}</code>\n"
+        f"{EMOJI_CLOCK} <b>Time:</b> {now_utc_str}\n"
         f"{EMOJI_CHART} <b>Today OTPs:</b> <b>{daily_count}</b>"
     )
     try:
@@ -227,6 +227,7 @@ async def forward_to_log_group(bot, user_id: int, phone: str, aid: str, code: st
         )
     except Exception as e:
         logging.error(f"Failed to post in OTP log group {OTP_LOG_GROUP_ID}: {e}")
+
 def format_tg_status(raw_status: any) -> tuple:
     if raw_status is None:
         return f'{EMOJI_WARN} Check Failed', False
