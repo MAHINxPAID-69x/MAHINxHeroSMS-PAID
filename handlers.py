@@ -27,7 +27,7 @@ def get_bot_instance():
     return global_bot
 
 ADMIN_ID = 7266067201
-COLOMBIA_ID = 151
+COLOMBIA_ID = 33
 TG_SERVICE = "tg"
 
 # Live Monitoring Telegram Group ID
