@@ -80,7 +80,6 @@ EMOJI_SIREN   = '<tg-emoji emoji-id="5395695537687123235">🚨</tg-emoji>'
 USER_CACHE = {}
 SETTINGS_CACHE = {}
 last_known_stocks = {}
-LATEST_STOCK_REPORT = ""
 
 async def get_cached_user(user_id: int):
     if user_id in USER_CACHE:
@@ -232,8 +231,18 @@ def format_tg_status(raw_status: any) -> tuple:
     if raw_status is None:
         return f'{EMOJI_WARN} Check Failed', False
 
-    st = str(raw_status.get("status") if isinstance(raw_status, dict) else raw_status).strip().lower()
-    if any(w in st for w in ["unoccupied", "unregistered", "not_registered", "free", "fresh", "available", "false", "0"]):
+    if isinstance(raw_status, bool):
+        st = "occupied" if raw_status is True else "unoccupied"
+    elif isinstance(raw_status, dict):
+        st = str(raw_status.get("status") or raw_status.get("result") or raw_status.get("msg") or "").strip().lower()
+    else:
+        st = str(raw_status).strip().lower()
+
+    if "api_error" in st or "check_failed" in st or not st:
+        return f'{EMOJI_WARN} Check Failed', False
+
+    fresh_signals = ["unoccupied", "not_registered", "unregistered", "free", "fresh", "available", "false", "0"]
+    if any(w in st for w in fresh_signals):
         if "banned" in st and not any(neg in st for neg in ["not", "un", "no", "non", "false"]):
             return f'{EMOJI_BAN} Banned', False
         return f'{EMOJI_TICK} Fresh', True
@@ -279,10 +288,9 @@ async def is_allowed(user_id: int) -> bool:
         return False
     return True
 
-# --- Async Background Status Checker ---
 async def background_check_and_update(bot, chat_id: int, message_id: int, aid: str, phone: str, cost_str: str, client: HeroSMSClient, user_id: int):
     try:
-        check_res = await asyncio.wait_for(check_telegram_numbers([phone]), timeout=5.0)
+        check_res = await asyncio.wait_for(check_telegram_numbers([phone]), timeout=15.0)
         badge = "Fresh"
         is_fresh = True
         status_emoji = EMOJI_TICK
@@ -321,7 +329,6 @@ async def background_check_and_update(bot, chat_id: int, message_id: int, aid: s
     except Exception as e:
         logging.warning(f"Background check error for {phone}: {e}")
 
-# --- Webhook Handler ---
 async def handle_herosms_webhook(request):
     data = {}
     try:
@@ -388,7 +395,6 @@ async def handle_herosms_webhook(request):
         return web.Response(text="OK")
     return web.Response(text="Ignored")
 
-# --- Polling Handler (20 Minutes Auto-Poll) ---
 async def poll_sms(bot, chat_id: int, activation_id: str, phone: str, client: HeroSMSClient):
     for _ in range(400):  # 400 * 3s = 1200 seconds = 20 Minutes
         await asyncio.sleep(3)
@@ -435,7 +441,6 @@ async def poll_sms(bot, chat_id: int, activation_id: str, phone: str, client: He
         except Exception:
             pass
 
-# --- Start & Security ---
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
@@ -486,7 +491,7 @@ async def cmd_start(message: Message, state: FSMContext):
 
         if not user.get("api_key"):
             await message.answer(
-                f'{EMOJI_TICK} <b>Welcome to HeroSMS Premium Bot!</b>\n\nPlease send your HeroSMS API Key to get started:',
+                f'{EMOJI_TICK} <b>Welcome to Premium Bot!</b>\n\nPlease send your Activation API Key to get started:',
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML"
             )
@@ -527,7 +532,7 @@ async def cb_approval_action(callback: CallbackQuery):
                 target_id,
                 f'{EMOJI_TICK} <b>Congratulations!</b>\n\n'
                 f'Your account has been approved by Admin for <b>{exp_label}</b>!\n'
-                f'Please send your HeroSMS API Key to start using the bot:',
+                f'Please send your Activation API Key to start using the bot:',
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML"
             )
@@ -588,7 +593,7 @@ async def text_profile(message: Message):
         daily_otp = await db.get_user_daily_otp(message.from_user.id)
         text = (
             f'{EMOJI_USER} <b>Account Profile</b>\n\n'
-            f'{EMOJI_CARD} <b>HeroSMS Balance:</b> {bal_str}\n'
+            f'{EMOJI_CARD} <b>Balance:</b> {bal_str}\n'
             f'{EMOJI_PLANE} <b>Subscription Expiry:</b> <code>{exp_str}</code>\n'
             f'{EMOJI_KEY} <b>API Key:</b> <code>{user["api_key"][:12]}...</code>\n'
             f'{EMOJI_BOX} <b>Total Purchased:</b> {user.get("total_purchased", 0)}\n'
@@ -600,7 +605,7 @@ async def text_profile(message: Message):
 async def cb_change_key(callback: CallbackQuery, state: FSMContext):
     if not await is_allowed(callback.from_user.id):
         return
-    await callback.message.edit_text("Please send your new HeroSMS API Key:", reply_markup=kb.back_button())
+    await callback.message.edit_text("Please send your new Activation API Key:", reply_markup=kb.back_button())
     await state.set_state(BotStates.waiting_for_api_key)
 
 @router.message(F.text == "Balance")
@@ -619,15 +624,12 @@ async def text_balance(message: Message):
         else:
             await message.answer(f'{EMOJI_CROSS} Error fetching balance.')
 
-# --- Exact Number Purchase Process with Instant Delivery & Real Cost Delta Fallback ---
 async def buy_single_number_process(bot, user_id: int, chat_id: int, service: str, country_id: int, client: HeroSMSClient):
     active_op = await get_active_operator()
     active_price = await get_active_max_price()
     excluded_prefixes = await get_active_prefixes()
     
     phone_exception_str = ",".join(excluded_prefixes[:20]) if excluded_prefixes else None
-
-    # Step 1: Pre-purchase balance check for exact delta fallback
     init_bal = await client.get_balance()
 
     max_retries = 3
@@ -666,7 +668,6 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
 
     await db.increment_user_stats(user_id, purchased=1)
 
-    # Step 2: 100% Exact Rate Resolution (API cost or Balance Delta fallback)
     cost_val = res.get("cost")
     if cost_val is not None:
         cost_str = f"${float(cost_val):.3f}"
@@ -677,7 +678,6 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
         else:
             cost_str = f"${active_price:.3f}"
 
-    # Step 3: Clean User Display Card (No '|', separated line)
     msg = await bot.send_message(
         chat_id,
         f"{EMOJI_FLAG} <b>Number:</b> <code>+{phone}</code>\n"
@@ -689,9 +689,7 @@ async def buy_single_number_process(bot, user_id: int, chat_id: int, service: st
 
     await db.save_activation(aid, user_id, phone, msg.message_id, cost=cost_str)
 
-    # Checker runs non-blocking
     asyncio.create_task(background_check_and_update(bot, chat_id, msg.message_id, aid, phone, cost_str, client, user_id))
-    # 20 Minutes Poller (400 cycles * 3s)
     asyncio.create_task(poll_sms(bot, chat_id, aid, phone, client))
 
     return True
@@ -759,7 +757,7 @@ async def text_bulk_buy(message: Message, state: FSMContext):
         return
     user = await get_cached_user(message.from_user.id)
     if not user or not user.get("api_key"):
-        return await message.answer("Please send your HeroSMS API Key first.")
+        return await message.answer("Please send your Activation API Key first.")
     await message.answer(f'{EMOJI_BOX} <b>Bulk Purchase</b>\n\nHow many numbers do you want to buy? (1-50):', parse_mode="HTML")
     await state.set_state(BotStates.waiting_for_bulk_amount)
 
@@ -878,7 +876,6 @@ async def cb_active_cancel(callback: CallbackQuery):
     else:
         await callback.answer("Failed to cancel.", show_alert=True)
 
-# --- Admin Panel Switch ---
 @router.message(Command("admin"))
 async def cmd_admin(message: Message):
     if message.from_user.id != ADMIN_ID:
@@ -896,7 +893,6 @@ async def back_to_user_menu(message: Message):
         return
     await message.answer(f'{EMOJI_PLANE} Switched back to User Menu:', reply_markup=kb.main_reply_menu(), parse_mode="HTML")
 
-# --- Dynamic Buy Config (Operator / Price) ---
 @router.message(F.text == "⚙️ Buy Config (Operator/Price)")
 async def admin_buy_config(message: Message):
     if message.from_user.id != ADMIN_ID:
@@ -981,7 +977,6 @@ async def cb_admin_menu_close(callback: CallbackQuery, state: FSMContext):
     except Exception:
         pass
 
-# --- Dynamic Excluded Prefixes Manager ---
 @router.message(F.text == "🚫 Manage Excluded Prefixes")
 async def admin_manage_prefixes(message: Message):
     if message.from_user.id != ADMIN_ID:
@@ -1091,7 +1086,6 @@ async def process_remove_prefix(message: Message, state: FSMContext):
 
     await message.answer("\n".join(reply_lines), parse_mode="HTML")
 
-# --- Daily & Lifetime Analytics ---
 @router.message(F.text == "📈 Daily & Lifetime Stats")
 async def admin_stats_overview(message: Message):
     if message.from_user.id != ADMIN_ID:
@@ -1220,7 +1214,6 @@ async def admin_live_active_users(message: Message):
             )
         await message.answer("\n".join(lines), parse_mode="HTML")
 
-# --- Step-by-Step Ban/Unban ---
 @router.message(F.text == "🚫 Ban / Unban User")
 async def admin_req_ban(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
@@ -1253,7 +1246,6 @@ async def process_ban_id(message: Message, state: FSMContext):
     await message.answer(f"User <code>{target}</code> is now <b>{label}</b>.", parse_mode="HTML")
     await state.clear()
 
-# --- Step-by-Step Unapprove ---
 @router.message(F.text == "❌ Unapprove / Revoke Access")
 async def admin_revoke_access_req(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
@@ -1286,7 +1278,6 @@ async def process_unapprove_id(message: Message, state: FSMContext):
             pass
     await state.clear()
 
-# --- Step-by-Step Extend Subscription ---
 @router.message(F.text == "⏳ Extend User Subscription")
 async def admin_extend_user_req(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
@@ -1354,7 +1345,6 @@ async def process_extend_days(message: Message, state: FSMContext):
         else:
             await message.answer("Failed to extend subscription.")
 
-# --- Broadcast ---
 @router.message(F.text == "📢 Broadcast Message")
 async def admin_req_broadcast(message: Message, state: FSMContext):
     if message.from_user.id != ADMIN_ID:
