@@ -12,6 +12,7 @@ try:
 except ImportError:
     HAS_REQUESTS = False
 
+# Active Working Base URL
 BASE_URL = "https://hero-sms.com/stubs/handler_api.php"
 
 CHECKER_URL = "http://api.agbots.site:8080/check/"
@@ -37,14 +38,19 @@ def _sync_check_chunk(chunk_numbers: list) -> dict:
 
     if HAS_REQUESTS:
         try:
-            resp = requests.get(CHECKER_URL, json=payload, timeout=60)
+            resp = requests.post(CHECKER_URL, json=payload, timeout=20)
             if resp.status_code == 200:
                 data = resp.json()
                 if str(data.get("status")) == "200":
                     return data.get("result_obj") or {}
                 else:
-                    logging.warning(f"Checker API error: {data}")
-                    return {num: f"API_ERROR: {data.get('msg') or data}" for num in chunk_numbers}
+                    return {num: data.get("result_obj", {}).get(num, f"API_ERROR: {data.get('msg') or data}") for num in chunk_numbers}
+            elif resp.status_code in [405, 404]:
+                resp_get = requests.get(CHECKER_URL, json=payload, timeout=20)
+                if resp_get.status_code == 200:
+                    data = resp_get.json()
+                    if str(data.get("status")) == "200":
+                        return data.get("result_obj") or {}
         except Exception as e:
             logging.error(f"Checker requests failed: {e}")
 
@@ -58,9 +64,9 @@ def _sync_check_chunk(chunk_numbers: list) -> dict:
                 "User-Agent": "python-requests/2.31.0",
                 "Accept": "*/*"
             },
-            method="GET"
+            method="POST"
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=20) as resp:
             if resp.status == 200:
                 data = json.loads(resp.read().decode("utf-8"))
                 if str(data.get("status")) == "200":
