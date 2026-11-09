@@ -56,21 +56,21 @@ MENU_BUTTONS = [
 ]
 
 # --- Verified Custom Premium Emojis ---
-EMOJI_USER    = '<tg-emoji emoji-id="6271387924223234127">👤</tg-emoji>'
+EMOJI_USER    = '<tg-emoji emoji-id="5397693616602755866">👤</tg-emoji>'
 EMOJI_ID      = '<tg-emoji emoji-id="5289967908309442996">🆔</tg-emoji>'
 EMOJI_FLAG    = '<tg-emoji emoji-id="5294010206974397371">🇨🇴</tg-emoji>'
 EMOJI_CLOCK   = '<tg-emoji emoji-id="5215394081911351762">⏰</tg-emoji>'
-EMOJI_CHART   = '<tg-emoji emoji-id="6097979946792130160">📊</tg-emoji>'
-EMOJI_TICK    = '<tg-emoji emoji-id="6283084125192590161">✅</tg-emoji>'
-EMOJI_CROSS   = '<tg-emoji emoji-id="6100304499056844996">❌</tg-emoji>'
-EMOJI_WARN    = '<tg-emoji emoji-id="6098337704682984714">⚠️</tg-emoji>'
-EMOJI_CARD    = '<tg-emoji emoji-id="6129870117619634982">💳</tg-emoji>'
-EMOJI_BOX     = '<tg-emoji emoji-id="6257812301399725616">📦</tg-emoji>'
-EMOJI_KEY     = '<tg-emoji emoji-id="6176966310920983412">🔑</tg-emoji>'
+EMOJI_CHART   = '<tg-emoji emoji-id="5231200819986047254">📊</tg-emoji>'
+EMOJI_TICK    = '<tg-emoji emoji-id="6087154735125630953">✅</tg-emoji>'
+EMOJI_CROSS   = '<tg-emoji emoji-id="5321012601939838274">❌</tg-emoji>'
+EMOJI_WARN    = '<tg-emoji emoji-id="5420323339723881652">⚠️</tg-emoji>'
+EMOJI_CARD    = '<tg-emoji emoji-id="5206330150433595241">💳</tg-emoji>'
+EMOJI_BOX     = '<tg-emoji emoji-id="5298809897352193254">📦</tg-emoji>'
+EMOJI_KEY     = '<tg-emoji emoji-id="5193070340850327783">🔑</tg-emoji>'
 EMOJI_LOCK    = '<tg-emoji emoji-id="6334379984760604198">🔒</tg-emoji>'
-EMOJI_BAN     = '<tg-emoji emoji-id="6100388225149310843">🚫</tg-emoji>'
-EMOJI_PLANE   = '<tg-emoji emoji-id="6165465711352223465">🛫</tg-emoji>'
-EMOJI_SIREN   = '<tg-emoji emoji-id="6257780484281997093">🚨</tg-emoji>'
+EMOJI_BAN     = '<tg-emoji emoji-id="5280803324273115630">🚫</tg-emoji>'
+EMOJI_PLANE   = '<tg-emoji emoji-id="5411563083908797492">🛫</tg-emoji>'
+EMOJI_SIREN   = '<tg-emoji emoji-id="5395695537687123235">🚨</tg-emoji>'
 
 # --- In-Memory Speed Cache ---
 USER_CACHE = {}
