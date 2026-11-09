@@ -398,7 +398,7 @@ async def cmd_start(message: Message, state: FSMContext):
 
         user = await get_cached_user(uid)
         if user and user.get("is_banned"):
-            await message.answer(f'{EMOJI_BAN} You are banned from using this bot.')
+            await message.answer(f'{EMOJI_BAN} You are banned from using this bot.', parse_mode="HTML")
             return
 
         if not user or not user.get("is_approved"):
@@ -428,7 +428,7 @@ async def cmd_start(message: Message, state: FSMContext):
 
         maintenance = await get_cached_setting("maintenance", "0")
         if maintenance == "1" and uid != ADMIN_ID:
-            return await message.answer(f'{EMOJI_WARN} Bot is under maintenance. Contact Admin.')
+            return await message.answer(f'{EMOJI_WARN} Bot is under maintenance. Contact Admin.', parse_mode="HTML")
 
         if not user.get("api_key"):
             await message.answer(
@@ -484,7 +484,7 @@ async def cb_approval_action(callback: CallbackQuery):
 async def process_api_key(message: Message, state: FSMContext):
     if not await is_allowed(message.from_user.id):
         await state.clear()
-        return await message.answer(f'{EMOJI_LOCK} You are not approved yet.')
+        return await message.answer(f'{EMOJI_LOCK} You are not approved yet.', parse_mode="HTML")
 
     text = message.text.strip()
     if text in MENU_BUTTONS:
@@ -506,7 +506,7 @@ async def process_api_key(message: Message, state: FSMContext):
                 parse_mode="HTML"
             )
         else:
-            await message.answer(f'{EMOJI_CROSS} Invalid API Key. Please check and try again.')
+            await message.answer(f'{EMOJI_CROSS} Invalid API Key. Please check and try again.', parse_mode="HTML")
 
 @router.callback_query(F.data == "menu_main")
 async def cb_menu_main(callback: CallbackQuery, state: FSMContext):
@@ -563,7 +563,7 @@ async def text_balance(message: Message):
             alert = f'\n{EMOJI_WARN} <b>Warning:</b> Balance is below $0.50! Please recharge.' if balance < 0.50 else ""
             await message.answer(f'{EMOJI_CARD} Balance: <code>{balance:.4f} USD</code>{alert}', parse_mode="HTML")
         else:
-            await message.answer(f'{EMOJI_CROSS} Error fetching balance.')
+            await message.answer(f'{EMOJI_CROSS} Error fetching balance.', parse_mode="HTML")
 
 async def buy_single_number_process(bot, user_id: int, chat_id: int, service: str, country_id: int, client: HeroSMSClient):
     active_op = await get_active_operator()
