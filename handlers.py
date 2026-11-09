@@ -1093,26 +1093,30 @@ async def admin_stats_overview(message: Message):
     async with ChatActionSender.typing(bot=message.bot, chat_id=message.chat.id):
         users = await db.get_approved_users()
         if not users:
-            return await message.answer(f"{EMOJI_WARN} No users found.")
+            return await message.answer(f"{EMOJI_WARN} No approved users found.")
 
         total_bot_bought = sum(u.get("total_purchased", 0) for u in users)
         total_bot_otps = sum(u.get("total_otps", 0) for u in users)
 
         lines = [
-            f"📈 <b>Bot Usage & Activity Summary</b>\n",
-            f"👥 <b>Total Approved Users:</b> <code>{len(users)}</code>",
-            f"📦 <b>Total Numbers Bought (Lifetime):</b> <code>{total_bot_bought}</code>",
-            f"💳 <b>Total OTPs Received (Lifetime):</b> <code>{total_bot_otps}</code>",
-            f"\n📊 <b>Per-User Breakdown:</b>"
+            f"{EMOJI_CHART} <b>Bot Usage & Activity Summary</b>\n",
+            f"{EMOJI_USER} <b>Total Approved Users:</b> <code>{len(users)}</code>",
+            f"{EMOJI_BOX} <b>Total Numbers Bought:</b> <code>{total_bot_bought}</code>",
+            f"{EMOJI_CARD} <b>Total OTPs Received:</b> <code>{total_bot_otps}</code>",
+            f"\n───────────────────",
+            f"📊 <b>Per-User Breakdown:</b>\n"
         ]
 
         for idx, u in enumerate(users, 1):
             uname = f"@{u['username']}" if u['username'] else "No Username"
             daily_otp = await db.get_user_daily_otp(u["user_id"])
+            full_name_clean = html.escape(str(u.get('full_name') or 'User'))
+            
             lines.append(
-                f"<b>{idx}. {html.escape(str(u.get('full_name') or 'User'))}</b> ({uname})\n"
-                f"• ID: <code>{u['user_id']}</code> | Bought: <b>{u.get('total_purchased', 0)}</b>\n"
-                f"• Today OTPs: <b>{daily_otp}</b> | Lifetime OTPs: <b>{u.get('total_otps', 0)}</b>"
+                f"<b>{idx}. {full_name_clean}</b> ({uname})\n"
+                f" ├ {EMOJI_ID} ID: <code>{u['user_id']}</code>\n"
+                f" ├ {EMOJI_BOX} Bought: <b>{u.get('total_purchased', 0)}</b>\n"
+                f" └ {EMOJI_CLOCK} Today: <b>{daily_otp}</b> | Total: <b>{u.get('total_otps', 0)}</b>\n"
             )
 
         text = "\n".join(lines)
@@ -1121,7 +1125,6 @@ async def admin_stats_overview(message: Message):
                 await message.answer(chunk, parse_mode="HTML")
         else:
             await message.answer(text, parse_mode="HTML")
-
 @router.message(F.text.startswith("🔔 Restock Alert") | F.text.startswith("🔕 Restock Alert"))
 async def toggle_restock_alert(message: Message):
     if message.from_user.id != ADMIN_ID:
