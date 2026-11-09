@@ -17,22 +17,19 @@ def main_reply_menu() -> ReplyKeyboardMarkup:
     return b.as_markup(resize_keyboard=True)
 
 
-def admin_reply_menu(restock_on: bool = True) -> ReplyKeyboardMarkup:
-    restock_label = "🔔 Restock Alert: ON" if restock_on else "🔕 Restock Alert: OFF"
+def admin_reply_menu() -> ReplyKeyboardMarkup:
     b = ReplyKeyboardBuilder()
-    b.button(text="📊 Users & OTP Monitor", style="primary")
-    b.button(text="📈 Daily & Lifetime Stats", style="primary")
-    b.button(text="👥 Live Active Users", style="success")
+    # 3-in-1 Combo Button for Stats, Users, and Active Monitor
+    b.button(text="📊 Users & Activity Analytics", style="primary")
     b.button(text="⚙️ Buy Config (Operator/Price)", style="primary")
     b.button(text="🚫 Manage Excluded Prefixes", style="primary")
     b.button(text="📢 Broadcast Message", style="primary")
+    b.button(text="⏳ Extend User Subscription", style="success")
     b.button(text="🚫 Ban / Unban User", style="danger")
     b.button(text="❌ Unapprove / Revoke Access", style="danger")
-    b.button(text="⏳ Extend User Subscription", style="success")
-    b.button(text=restock_label, style="success" if restock_on else "danger")
     b.button(text="⚙️ Toggle Maintenance", style="danger")
     b.button(text="⬅️ Back to User Menu", style="primary")
-    b.adjust(2, 2, 2, 2, 2, 1, 1)
+    b.adjust(1, 2, 2, 2, 1, 1)
     return b.as_markup(resize_keyboard=True)
 
 
@@ -109,16 +106,6 @@ def otp_copy_menu(otp_code: str) -> InlineKeyboardMarkup:
         )
     except Exception:
         b.button(text=code_str, callback_data="noop", style="success")
-    return b.as_markup()
-
-
-def bulk_report_menu(batch_id: str, show_only_fresh: bool = False) -> InlineKeyboardMarkup:
-    b = InlineKeyboardBuilder()
-    if not show_only_fresh:
-        b.button(text="View Only Fresh", callback_data=f"filter_fresh_{batch_id}", style="success")
-    else:
-        b.button(text="Show All", callback_data=f"filter_all_{batch_id}", style="primary")
-    b.adjust(1)
     return b.as_markup()
 
 
