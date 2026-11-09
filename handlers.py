@@ -506,7 +506,10 @@ async def process_api_key(message: Message, state: FSMContext):
                 parse_mode="HTML"
             )
         else:
-            await message.answer(f'{EMOJI_CROSS} Invalid API Key. Please check and try again.')
+            await message.answer(
+    '<tg-emoji emoji-id="5210952531676504517">❌</tg-emoji> Invalid API Key. Please check and try again.',
+    parse_mode="HTML"
+)
 
 @router.callback_query(F.data == "menu_main")
 async def cb_menu_main(callback: CallbackQuery, state: FSMContext):
