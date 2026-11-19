@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiohttp import web
 
@@ -36,21 +37,6 @@ async def start_web_server():
     logging.info(f"Web server started on port {PORT}")
 
 
-async def clear_webhook_with_retry(bot: Bot, retries: int = 5):
-    for attempt in range(1, retries + 1):
-        try:
-            await bot.delete_webhook(drop_pending_updates=True, request_timeout=30)
-            logging.info("Webhook cleared successfully.")
-            return
-        except Exception as e:
-            wait_sec = min(attempt * 3, 15)
-            logging.warning(
-                f"delete_webhook attempt {attempt}/{retries} failed: {e}. Retrying in {wait_sec}s..."
-            )
-            await asyncio.sleep(wait_sec)
-    logging.warning("Could not clear webhook after retries; continuing to polling...")
-
-
 async def main():
     if not BOT_TOKEN:
         raise ValueError("BOT_TOKEN environment variable is not set!")
@@ -66,19 +52,12 @@ async def main():
 
     # Start Aiohttp Web Server (Render Web Service Port Binding)
     await start_web_server()
-    await clear_webhook_with_retry(bot)
 
     logging.info("Bot is starting polling...")
     try:
-        while True:
-            try:
-                await dp.start_polling(bot, request_timeout=30)
-                break
-            except (asyncio.CancelledError, KeyboardInterrupt, SystemExit):
-                raise
-            except Exception as e:
-                logging.error(f"Polling error: {e}. Reconnecting in 5s...")
-                await asyncio.sleep(5)
+        # Delete pending updates to prevent duplicate execution on restart
+        await bot.delete_webhook(drop_pending_updates=True)
+        await dp.start_polling(bot)
     finally:
         await bot.session.close()
 
